@@ -1,0 +1,19 @@
+baseurl: https://www.example.com/
+title: Black & Light
+author: David Hamp-Gonsalves
+canonifyurls: yes
+languagecode: en
+theme: hugo-black-and-light-theme
+pygmentsstyle: bw
+pygmentscodefences: yes
+params:
+  disableWebFonts: no
+  sitename: Black & Light
+menu:
+  main:
+    - name: About
+      url: https://github.com/davidhampgonsalves/hugo-black-and-light-theme
+    - name: Projects
+      url: https://github.com/davidhampgonsalves/hugo-black-and-light-theme
+    - name: Resume
+      url: https://github.com/davidhampgonsalves/hugo-black-and-light-theme
