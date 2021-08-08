@@ -1,13 +1,15 @@
 ---
-title: Hi Hugo
+title: We don't know what's good for us?
 author: ''
-date: '2021-07-27'
 slug: []
 categories: []
 tags: []
 ---
 
-Well well well
+Some states of the world are preferable to other states of the world. And my actions can cause one state of the world to occur over another. So there must be a set of realisable worlds (the ones I can realise by my actions). And if I were omnipotent I could order every world from the realisable set from the best realisable world to the worst realisable world. 
+
+However, I am not omnipotent. I do not know which actions will lead to the best realisable world...
+
 
 
 ```r
