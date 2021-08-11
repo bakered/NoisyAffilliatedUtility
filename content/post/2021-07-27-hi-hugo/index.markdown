@@ -1,14 +1,23 @@
 ---
-title: We don't know what's good for us?
+
+title: We don't know what's good for us
 author: ''
 slug: []
 categories: []
 tags: []
 ---
 
-Some states of the world are preferable to other states of the world. And my actions can cause one state of the world to occur over another. So there must be a set of realisable worlds (the ones I can realise by my actions). And if I were omnipotent I could order every world from the realisable set from the best realisable world to the worst realisable world. 
 
-However, I am not omnipotent. I do not know which actions will lead to the best realisable world...
+My actions can cause one state of the world to occur rather than another. There is a set of realisable worlds (the ones I can realise by my actions). 
+
+Some states of the world are preferable to other states of the world.
+
+It is possible to order the set of realisable worlds from the worst realisable world to the best one.
+
+If I were omnipotent I would act such that the best of possible worlds was realised. However, I do not know which of my actions cause which worlds and I cannot fully comprehend any of the worlds anyway. I can never say with 100% confidence that action A will lead to a more preferable world than action B.
+
+This applies even to simple decisions such as whether I should eat an apple or an orange. 
+
 
 
 
