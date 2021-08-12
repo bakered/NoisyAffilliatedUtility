@@ -14,10 +14,10 @@ runtime: shiny
 Utility is noisy - 
 
 ```
-<iframe height="800" width="100%" frameborder="no" src="https://bakered91.shinyapps.io/UncertainAffiliatedUtilityModel/"> </iframe>
+<iframe height="800" width="100%" frameborder="no" src="https://bakered91.shinyapps.io/uncertain_affiliated_utility/"> </iframe>
 ```
 
-<iframe height="800" width="100%" frameborder="no" src="https://bakered91.shinyapps.io/UncertainAffiliatedUtilityModel/"> </iframe>
+<iframe height="800" width="100%" frameborder="no" src="https://bakered91.shinyapps.io/uncertain_affiliated_utility/"> </iframe>
 
 <br>
 
