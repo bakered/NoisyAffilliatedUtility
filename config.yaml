@@ -14,15 +14,14 @@ pygmentsstyle: bw
 pygmentscodefences: yes
 params:
   disableWebFonts: no
-  sitename: Black & Light
+  sitename: Noisy Affiliated Utility
 menu:
   main:
-    - name: About
+    - name: Ed Mainpage
       url: https://github.com/davidhampgonsalves/hugo-black-and-light-theme
-    - name: Projects
+    - name: NAU Model
       url: https://github.com/davidhampgonsalves/hugo-black-and-light-theme
-    - name: Resume
-      url: https://github.com/davidhampgonsalves/hugo-black-and-light-theme
+    
 
 markup:
   goldmark:
