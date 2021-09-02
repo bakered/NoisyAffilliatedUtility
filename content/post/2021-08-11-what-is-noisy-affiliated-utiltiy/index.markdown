@@ -1,5 +1,5 @@
 ---
-title: What is Noisy Affiliated Utiltiy
+title: What is Noisy Affiliated Utility
 author: ''
 date: ''
 slug: []
