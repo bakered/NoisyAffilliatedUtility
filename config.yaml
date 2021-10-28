@@ -17,10 +17,8 @@ params:
   sitename: Noisy Affiliated Utility
 menu:
   main:
-    - name: Ed Mainpage
-      url: https://github.com/davidhampgonsalves/hugo-black-and-light-theme
     - name: NAU Model
-      url: https://github.com/davidhampgonsalves/hugo-black-and-light-theme
+      url: https://pensive-curie-035758.netlify.app/
     
 
 markup:

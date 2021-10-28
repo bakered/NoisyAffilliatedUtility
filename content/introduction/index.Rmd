@@ -1,0 +1,223 @@
+---
+title: Introduction to NAU
+author: ''
+date: ''
+slug: []
+categories: []
+tags: []
+---
+<style>
+table {
+    margin: 25px 0;
+    font-family: sans-serif;
+    text-align: center;
+    table-layout: fixed;
+    width: 500px;
+}
+th {
+    font-weight: bold;
+    padding: 10px;
+    text-shadow: 1px 1px 1px #fff;
+    text-align: center;
+}
+td {
+    background-color: #7FFFD4;
+    border: solid 1px #DDEEEE;
+    padding: 10px;
+    text-shadow: 1px 1px 1px #fff;
+}
+
+</style>
+<body>
+
+## Utility is Noisy
+
+```{r include=F}
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+library(gridExtra)
+library(ggrepel)
+library(cowplot)
+library(ellipse)
+cbp1 = c("#999999", "#E69F00", "#56B4E9", "#009E73",
+         "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+
+signal.i = 10
+a=1  # sigma i
+b=1  # sigma j
+c=1  # sigma c
+sigma.c = sqrt(c^2 + b^2)
+    
+#min.val and max.val for which values of x to calculate
+min.val = qnorm(0.00001, mean = signal.i, sd=(sqrt(a^2 + sigma.c^2)))
+max.val = qnorm(0.99999, mean = signal.i, sd=(sqrt(a^2 + sigma.c^2)))
+distr.table = data.frame(x.d = seq(from = min.val, to = max.val, length.out = 500))
+
+#compute the prior distribution
+distr.table$prior.value = sapply(distr.table$x.d, FUN = function(x){dnorm(x, mean = signal.i, sd=a)})
+
+#data for ggplot
+plot.what = c("Prior Value" = "prior.value")
+col.select = which(colnames(distr.table) %in% plot.what)
+LD = distr.table %>% gather(key = distributions, value = density, col.select)
+    
+#plot graph
+plot1 = ggplot(data=LD, aes(x=x.d, y= density)) + 
+        geom_area(alpha=0.2, position = "identity", aes(fill=distributions)) +
+        geom_line(aes(colour=distributions)) +
+        lims(x=c(5, 15))+
+        scale_colour_manual(name = NULL,
+                            breaks=c("prior.value"),
+                            values = c("prior.value" = cbp1[4]),
+                            labels = c("Prior Value")) +
+        scale_fill_manual(name = NULL,
+                          breaks=c("prior.value"),
+                          values = c("prior.value" = cbp1[4]),
+                          labels = c("Prior Value")) +
+        theme_classic() + 
+        labs(title=NULL, x="Utility", y="Probability Density") +
+        theme(legend.justification=c(1,1), legend.position="none")
+   #   if(do.posterior){plot1 = plot1 + geom_vline(aes(xintercept = E.posterior), colour = cbp1[2], show.legend = T, linetype = "dashed")} 
+  #    if(do.threshold){plot1 = plot1 + geom_vline(aes(xintercept = input$t), show.legend = F)}
+```
+```{r echo=F}
+suppressWarnings(print(plot1))
+```
+
+This means that utility of an action is not known exactly. Instead, there is a probability distribution. This allows us to model the uncertainty over how much a person likes a particular good.
+
+## Affiliated Utility
+
+```{r include=F}
+do.uncertainty = F
+do.perspective.1 = F
+numgoods = 60
+    
+## function for initial plots
+create.plot = function(title, plot.table){#plot.table = plot.table.aff; title = "Affiliated Value"
+  #create plot
+  if(do.perspective.1){plot.table$u2 = plot.table$u1}
+  ggplot(data=plot.table, aes(x=u1, y=u2, label=label)) +
+    geom_point(data = plot.table[plot.table$label == "",], color = "grey50") +
+    geom_point(data = plot.table[plot.table$label != "",], color = "red") + 
+    geom_text_repel(box.padding = 0.5, nudge_x = .75, nudge_y = 0) +
+    labs(title=title, x="Utility Person 1", y="Utility Person 2") +
+    lims(x=c(0, 10),
+       y= c(0, 10)) +
+    theme_classic()
+}
+
+#calculating ellipses function
+    ellipse.df = function(df, dis){
+      df_ell <- data.frame()
+      cor = 2 / (dis + 2)
+      for(n in 1:nrow(df)){ #n = 1
+        if(do.perspective.1){
+          sigma.u2.unc = sqrt(2*dis^2 + b^2)
+          mean.u2 = df$u1[n] 
+        } else {
+          sigma.u2.unc = b
+          mean.u2 = df$u2[n]
+        }
+        df_ell <- rbind(df_ell, cbind(as.data.frame(ellipse(cor, 
+                                                            scale=c(a, sigma.u2.unc), 
+                                                            centre=c(df$u1[n], mean.u2))), datpoint=n))
+      }
+    df_ell$datpoint = as.factor(df_ell$datpoint)
+    return(df_ell)
+    }
+    
+    plot.table = data.frame(x.d = seq(from = 0, to = 10, length.out = numgoods))
+    plot.table$base = runif(n = numgoods, min = plot.table$x.d[1], max = tail(plot.table$x.d, 1))
+    # include choc and bloc points
+    choc = which.min(abs(plot.table$base - quantile(plot.table$base, 0.75)))
+    broc = which.min(abs(plot.table$base - quantile(plot.table$base, 0.25)))
+    ix_label <- c(broc, choc)
+    plot.table$label = ""
+    plot.table$label[ix_label] <- c("Broccoli", "Chocolate Cake")
+    
+    
+    plot.table.com = plot.table
+    plot.table.com$u1 = plot.table.com$base
+    plot.table.com$u2 = plot.table.com$base
+    ComVal = create.plot("Common Value", plot.table.com)
+    
+    plot.table.aff = plot.table
+    plot.table.aff$u1 = sapply(plot.table.aff$base, FUN = function(x){rnorm(n=1, mean = x, sd= c)})
+    plot.table.aff$u2 = sapply(plot.table.aff$base, FUN = function(x){rnorm(n=1, mean = x, sd= c)})
+    AffVal = create.plot("Affiliated Value", plot.table.aff)
+    AffVal2 = create.plot("", plot.table.aff)
+    
+    plot.table.ind = plot.table
+    plot.table.ind$u1 = plot.table.ind$base
+    plot.table.ind$u2 = runif(n = numgoods, min = plot.table.ind$x.d[1], max = tail(plot.table.ind$x.d, 1))
+    IndVal = create.plot("Independent Value", plot.table.ind)
+    
+    if(do.uncertainty){
+      #drawing
+      df_ell = ellipse.df(plot.table.com, dis = 0.001) 
+      ComVal =  ComVal + geom_polygon(data=df_ell, aes(x=x, y=y, group=datpoint, label = NA), size=1, alpha = 0.2, fill = "grey50")
+      df_ell = ellipse.df(plot.table.aff, dis = c) 
+      AffVal = AffVal + geom_polygon(data=df_ell, aes(x=x, y=y, group=datpoint,  label = NA), size=1, alpha = 0.2, fill = "grey50")
+      df_ell = ellipse.df(plot.table.ind, dis = Inf) 
+      IndVal = IndVal + geom_polygon(data=df_ell, aes(x=x, y=y, group=datpoint,  label = NA), size=1, alpha = 0.2, fill = "grey50")
+    }
+    
+    plots = cowplot::plot_grid(
+      ComVal, AffVal, IndVal, nrow = 1)
+  
+```
+```{r echo=F}
+ suppressWarnings(print(AffVal2))
+```
+
+This means that two people's utilities are interdependent. If person 1 likes a particular good, then probably person 2 likes it too. The extreme version of affiliation is common value where two people's preferences can be represented by the same utility function.
+
+## Things Only Get Interesting If You Put the Two Together
+
+<table>
+  <tr>
+    <th style = "border: solid 0px #DDEEEE;"></th>
+    <th>Simple</th>
+    <th>Noisy</th>
+  </tr>
+  <tr>
+    <th>Affiliated</th>
+    <td>Not Interesting</td>
+    <td style = "background-color: #FFE4C4;" >Interesting</td>
+  </tr>
+  <tr>
+    <th>Independent</th>
+    <td>Not Interesting</td>
+    <td>Not Interesting</td>
+  </tr>
+</table>
+
+If Utility is Noisy *and* Affiliated,  
+$\rightarrow$ then there is a gap between Willingness to Pay and Willingness to Accept  
+$\rightarrow$ and fundamental theorems of welfare do not apply  
+$\rightarrow$ we enter a world of social learning and Bayesian updating 
+
+# Focus on WTP-WTA Gap
+
+Intuition: The fact that someone wants to sell a good sends a signal about its worth.
+
+
+```{tikz, echo=F, fig.cap = 'A WTP-WTA gap exists in the red zone', fig.ext = 'png', out.width = "75%"}
+\definecolor{badcol}{HTML}{FFE4C4}
+\definecolor{goodcol}{HTML}{7FFFD4}
+\begin{tikzpicture}
+\fill [badcol] (0,0) rectangle (4.9,5);
+\draw[help lines, color=gray!30, dashed] (0,0) grid (4.9,4.9);
+\draw[->,ultra thick, color=goodcol] node[below, color=black]{\tiny Certainty} (-0.01,0)--node[below, color=black] {Noise in Utility} (5,0) node[right, color=black]{\tiny No Info.};
+\draw[-,ultra thick, color=goodcol] node[left, color=black]{\tiny Independent} (0,0)--node[left, color=black] {Affiliation} (0,5) node[left, color=black]{\tiny Common Value};
+\end{tikzpicture}
+```
+
+On the y-axis (utility has zero noise) there is no gap and the fundamental theorems of welfare apply. On the x-axis (utility has zero affiliation) there is also no gap and the fundamental theorems of welfare apply ex-ante^[Ex-ante pareto efficiency in the sense that no person can increase expected utility without someone else decreasing expected utility. However, if the underlying utility function were known, then a pareto superior outcome could be found.]. Moving up the y-axis means that there are fewer potential gains from trading, and moving along the x-axis implies those gains are harder to find. 
+
+However, the interaction of Noise and Affiliation opens up a WTP-WTA gap and the further you go from the axes, the bigger the gap becomes. 
+
+
+</body>

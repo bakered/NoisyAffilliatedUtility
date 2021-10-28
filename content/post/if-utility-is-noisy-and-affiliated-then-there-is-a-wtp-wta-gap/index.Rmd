@@ -1,0 +1,15 @@
+---
+title: If Utility Is Noisy and Affiliated then there is a WTP-WTA Gap
+author: ''
+date: ''
+slug: []
+categories: []
+tags: []
+weight: 3
+---
+
+If $i$ knows that $j$ is willing to buy at price $p$, then she knows that $s_j > p$.
+
+If $Cov(U_i, S_j) > 1$ then $\mathbb{E}(U_i|S_j = s_j)$ is rising in $s_j$.
+
+Therefore $\mathbb{E(U_i|s_j > p) > E(U_i)}$
